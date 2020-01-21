@@ -15,6 +15,7 @@ import (
 
 // Config ...
 type Config struct {
+	Schema		  string
 	Host          string
 	Port          string
 	Username      string
@@ -44,7 +45,7 @@ func NewConnector(config Config) *Connector {
 
 // Authenticate ...
 func (c *Connector) Authenticate() error {
-	url := fmt.Sprintf("https://%s:%s/login", c.Config.Host, c.Config.Port)
+	url := fmt.Sprintf("%s://%s:%s/login",c.Config.Schema, c.Config.Host, c.Config.Port)
 
 	data := fmt.Sprintf(`{ "username":"%s", "password":"%s", "eauth": "pam" }`, c.Config.Username, c.Config.Password)
 
@@ -69,7 +70,7 @@ func (c *Connector) Authenticate() error {
 
 // Get ...
 func (c *Connector) Get(uri string) (*http.Response, error) {
-	url := fmt.Sprintf("https://%s:%s%s", c.Config.Host, c.Config.Port, uri)
+	url := fmt.Sprintf("%s://%s:%s%s",c.Config.Schema, c.Config.Host, c.Config.Port, uri)
 
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
@@ -92,7 +93,7 @@ func (c *Connector) Get(uri string) (*http.Response, error) {
 
 // Post ...
 func (c *Connector) Post(uri string, data []byte) (*http.Response, error) {
-	url := fmt.Sprintf("https://%s:%s%s", c.Config.Host, c.Config.Port, uri)
+	url := fmt.Sprintf("%s://%s:%s%s",c.Config.Schema, c.Config.Host, c.Config.Port, uri)
 
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(data))
 	if err != nil {
